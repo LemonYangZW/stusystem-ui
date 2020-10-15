@@ -47,20 +47,28 @@ export default {
           { min: 3, max: 10, message: '长度为3到10位', trigger: 'blur' }
         ],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-      }
+      },
+      redirect: undefined
+    }
+  },
+  watch: {
+    $route: {
+      handler: function (route) {
+        this.redirect = route.query && route.query.redirect
+      },
+      immediate: true
     }
   },
   methods: {
     login () {
       // 表单验证
-      console.log(this.$refs)
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
         // console.log(this.loginFormRef.username)
         this.loading = true
         this.$store.dispatch('user/login', this.loginForm).then(() => {
-          // this.$router.push({ path: this.redirect || '/' })
-          this.$router.push({ path: '/druid' })
+          this.$router.push({ path: this.redirect || '/' })
+          // this.$router.push({ path: '/druid' })
           this.loading = false
         }).catch(() => {
           this.loading = false
