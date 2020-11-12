@@ -3,12 +3,21 @@
     <div class="login_box">
       <div class="login_title">
         <span class="title">数据管理平台</span>
-        <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px">
+        <el-form
+          ref="loginFormRef"
+          :model="loginForm"
+          :rules="loginFormRules"
+          label-width="0px"
+        >
           <!-- 用户名 -->
           <el-form-item prop="username">
             <span class="svg-container" />
             <el-input v-model="loginForm.username" placeholder="请输入账号">
-              <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+              <svg-icon
+                slot="prefix"
+                icon-class="user"
+                class="el-input__icon input-icon"
+              />
             </el-input>
           </el-form-item>
           <!-- 密码 -->
@@ -19,12 +28,18 @@
               type="password"
               placeholder="请输入密码"
             >
-              <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+              <svg-icon
+                slot="prefix"
+                icon-class="password"
+                class="el-input__icon input-icon"
+              />
             </el-input>
           </el-form-item>
           <!-- 按钮区域 -->
           <el-form-item class="btns">
-            <el-button type="primary" :loading="loading" @click="login">登录</el-button>
+            <el-button type="primary" :loading="loading" @click="login"
+              >登录</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -74,7 +89,7 @@ export default {
           this.loading = false
         })
 
-        this.$message.success('登录成功')
+        // this.$message.success('登录成功')
         // window.sessionStorage.setItem('token', res.data.token)
       })
     }
