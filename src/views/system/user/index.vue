@@ -2,100 +2,117 @@
   <div class="app-container">
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          >新增</el-button
-        >
+        <el-tooltip class="item" effect="dark" content="新增" placement="top">
+          <el-button
+            round
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleAdd"
+          />
+        </el-tooltip>
+      </el-col>
+      <el-col :span="1.5">
+        <el-tooltip class="item" effect="dark" content="删除" placement="top">
+          <el-button
+            round
+            :disabled="multiple"
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleDelete"
+          />
+        </el-tooltip>
       </el-col>
     </el-row>
-    <el-card>
-      <el-table stripe border :data="userList" style="width: 100%">
-        <el-table-column type="selection" width="40" align="center" />
-        <el-table-column label="用户编号" align="center" prop="userId" />
-        <el-table-column
-          label="用户名称"
-          align="center"
-          prop="userName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="用户昵称"
-          align="center"
-          prop="nickName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="部门"
-          align="center"
-          prop="dept.deptName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="手机号码"
-          align="center"
-          prop="phonenumber"
-          width="120"
-        />
-        <el-table-column label="状态" align="center">
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.status"
-              active-value="0"
-              inactive-value="1"
-              @change="handleStatusChange(scope.row)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="创建时间"
-          align="center"
-          prop="createTime"
-          width="160"
-        >
-          <template #default="scope">
-            <span>{{ scope.row.createTime }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          align="center"
-          width="180"
-          class-name="small-padding fixed-width"
-        >
-          <template #default="scope">
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
-              >修改</el-button
-            >
-            <el-button
-              v-if="scope.row.userId !== 1"
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-              >删除</el-button
-            >
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-key"
-              @click="handleResetPwd(scope.row)"
-              >重置</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+
+    <el-table
+      stripe
+      :data="userList"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="40" align="center" />
+      <el-table-column label="用户编号" align="center" prop="userId" />
+      <el-table-column
+        label="用户名称"
+        align="center"
+        prop="userName"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="用户昵称"
+        align="center"
+        prop="nickName"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="部门"
+        align="center"
+        prop="dept.deptName"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="手机号码"
+        align="center"
+        prop="phonenumber"
+        width="120"
+      />
+      <el-table-column label="状态" align="center">
+        <template #default="scope">
+          <el-switch
+            v-model="scope.row.status"
+            active-value="0"
+            inactive-value="1"
+            @change="handleStatusChange(scope.row)"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        width="160"
+      >
+        <template #default="scope">
+          <span>{{ scope.row.createTime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        align="center"
+        width="180"
+        class-name="small-padding fixed-width"
+      >
+        <template #default="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            >修改</el-button
+          >
+          <el-button
+            v-if="scope.row.userId !== 1"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-key"
+            @click="handleResetPwd(scope.row)"
+            >重置</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+
     <div class="block">
       <el-pagination
         :current-page="queryParams.pageNum"
-        :page-sizes="[1, 2, 10, 50]"
+        :page-sizes="[10, 20, 30, 50]"
         :page-size="queryParams.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -103,7 +120,14 @@
         @current-change="handleCurrentChange"
       />
     </div>
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+    <el-dialog
+      :title="title"
+      :visible.sync="open"
+      width="600px"
+      append-to-body
+      :modal="true"
+      :close-on-click-modal="false"
+    >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -121,6 +145,7 @@
                 placeholder="请选择归属部门"
                 clearable
                 :show-all-levels="false"
+                @change="changeDept"
               />
             </el-form-item>
           </el-col>
@@ -203,6 +228,28 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择">
+                <el-option
+                  v-for="item in roleOptions"
+                  :key="item.roleId"
+                  :label="item.roleName"
+                  :value="item.roleId"
+                  :disabled="item.status == 1"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="备注">
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入内容"
+              />
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <template #footer>
@@ -216,11 +263,13 @@
 </template>
 
 <script>
-import { getUserInfoList, getUserBaseParam } from '@/api/user'
+import { getUserInfoList, getUserBaseParam, updateUser, addUser, delUser } from '@/api/user'
 import { treeselect } from '@/api/dept'
 export default {
   data () {
     return {
+      // 角色参数
+      roleOptions: [],
       // 岗位参数
       postOptions: [],
       // 状态参数
@@ -250,12 +299,18 @@ export default {
         checkStrictly: true,
         expandTrigger: 'hover'
       },
+      // 是否是单条数据
+      single: true,
+      // 是否是多条数据
+      multiple: true,
       // 表格数据
       userList: [],
+      // 选中数组
+      ids: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 2
+        pageSize: 10
       },
       // 总条目数
       total: 0,
@@ -264,9 +319,13 @@ export default {
       // dialog显示
       open: false,
       // 表单参数
-      form: {},
+      form: {
+        status: '0'
+      },
       // 部门列表
       deptOptions: [],
+      // 初始密码
+      initPassword: '',
       // 表单校验
       rules: {
         userName: [
@@ -300,6 +359,14 @@ export default {
       }
     }
   },
+  computed: {
+    deptId () {
+      if (this.form.deptId.length === 0) {
+        return null
+      }
+      return this.form.deptId[this.form.deptId.length - 1]
+    }
+  },
   watch: {
     'form.deptId' () {
       if (this.$refs.elcascader) {
@@ -312,6 +379,24 @@ export default {
     // this.getTreeselect()
   },
   methods: {
+    // 表单重置
+    reset () {
+      this.form = {
+        userId: undefined,
+        deptId: undefined,
+        userName: undefined,
+        nickName: undefined,
+        password: undefined,
+        phonenumber: undefined,
+        email: undefined,
+        sex: undefined,
+        status: '0',
+        remark: undefined,
+        postIds: [],
+        roleIds: []
+      }
+      this.$refs.form.resetFields()
+    },
     /** 查询用户列表 */
     getList () {
       this.loading = true
@@ -336,13 +421,28 @@ export default {
       console.log(userInfo)
     },
     handleDelete (userInfo) {
-      console.log(userInfo)
+      const userIds = userInfo.userId || this.ids
+      this.$confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function () {
+        return delUser(userIds)
+      }).then(() => {
+        this.getList()
+        this.$message({
+          showClose: true,
+          message: '删除成功!',
+          type: 'success'
+        })
+      }).catch(function () { })
     },
     handleResetPwd (userInfo) {
       console.log(userInfo)
     },
     handleAdd () {
       this.open = true
+      this.$refs.form.resetFields()
       this.getTreeselect()
       getUserBaseParam().then(response => {
         this.postOptions = response.posts
@@ -358,16 +458,47 @@ export default {
 
     },
     submitForm () {
-
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          if (this.form.userId !== undefined) {
+            updateUser(this.form).then(response => {
+              if (response.code === 200) {
+                this.msgSuccess('修改成功')
+                this.open = false
+                this.getList()
+              }
+            })
+          } else {
+            addUser(this.form).then(response => {
+              if (response.code === 200) {
+                this.msgSuccess('新增成功')
+                this.open = false
+                this.getList()
+              }
+            })
+          }
+        }
+      })
     },
+    // 窗口取消按钮
     cancel () {
-
+      this.open = false
+      this.reset()
+    },
+    changeDept () {
+      this.form.deptId = this.deptId
     },
     /** 查询部门下拉树结构 */
     getTreeselect () {
       treeselect().then(response => {
         this.deptOptions = response.data
       })
+    },
+    // table表格选中事件
+    handleSelectionChange (sel) {
+      this.ids = sel.map(item => item.userId)
+      this.single = sel.length !== 1
+      this.multiple = !sel.length
     }
   }
 }
